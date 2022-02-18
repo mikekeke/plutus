@@ -29,6 +29,7 @@ main = benchWith mkFullBM
             -- strictify and "short" the result cbor to create a real `SerializedScript`
             benchScript :: SerializedScript = toShort . BSL.toStrict $ bslCBOR
         in  whnf (\ script -> snd $ evaluateScriptCounting
+                        (ProtocolVersion 6 0)
                         -- no logs
                         Quiet
                         -- no need to pass chain params
