@@ -110,12 +110,16 @@ module Plutus.V1.Ledger.Api (
     , EvaluationError (..)
 ) where
 
+import Codec.CBOR.Decoding qualified as CBOR
+import Codec.CBOR.Extras
+import Codec.CBOR.Read qualified as CBOR
 import Codec.Serialise qualified as CBOR
 import Control.Monad.Except
 import Control.Monad.Writer
 import Data.Bifunctor
 import Data.ByteString.Lazy (fromStrict)
 import Data.ByteString.Short
+import Data.Coerce (coerce)
 import Data.Either
 import Data.Maybe (isJust)
 import Data.SatInt
@@ -194,14 +198,22 @@ instance Pretty EvaluationError where
     pretty (IncompatibleVersionError actual) = "This version of the Plutus Core interface does not support the version indicated by the AST:" <+> pretty actual
     pretty CostModelParameterMismatch = "Cost model parameters were not as we expected"
 
-{-| A variant of `Script` with a specialized `Serialise` instance
-that decodes the names directly into `NamedDeBruijn`s rather than `DeBruijn`s.
+-- | A variant of `Script` with a specialized decoder.
+newtype ScriptForExecution = ScriptForExecution (UPLC.Program UPLC.NamedDeBruijn PLC.DefaultUni PLC.DefaultFun ())
+
+{- |
+This decoder decodes the names directly into `NamedDeBruijn`s rather than `DeBruijn`s.
 This is needed because the CEK machine expects `NameDeBruijn`s, but there are obviously no names in the serialized form of a `Script`.
 Rather than traversing the term and inserting fake names after deserializing, this lets us do at the same time as deserializing.
 -}
-newtype ScriptForExecution = ScriptForExecution (UPLC.Program UPLC.NamedDeBruijn PLC.DefaultUni PLC.DefaultFun ())
-  -- Identical to the deriving instance for `Script`, *except* that it specifies `FakeNamedDeBruijn`
-  deriving CBOR.Serialise via (SerialiseViaFlat (UPLC.WithSizeLimits 64 (UPLC.Program UPLC.FakeNamedDeBruijn PLC.DefaultUni PLC.DefaultFun ())))
+scriptCBORDecoder :: ProtocolVersion -> CBOR.Decoder s ScriptForExecution
+scriptCBORDecoder pv =
+    let availableBuiltins = builtinsAvailableIn pv
+        flatDecoder = UPLC.decodeProgram (UPLC.Limit 64) (\f -> f `Set.member` availableBuiltins)
+    in do
+        -- Deserialize using 'FakeNamedDeBruijn' to get the fake names added
+        (p :: UPLC.Program UPLC.FakeNamedDeBruijn PLC.DefaultUni PLC.DefaultFun ()) <- decodeViaFlat flatDecoder
+        pure $ coerce p
 
 -- | Shared helper for the evaluation functions, deserializes the 'SerializedScript' , applies it to its arguments, puts fakenamedebruijns, and scope-checks it.
 mkTermToEvaluate
@@ -212,7 +224,7 @@ mkTermToEvaluate
     -> m (UPLC.Term UPLC.NamedDeBruijn PLC.DefaultUni PLC.DefaultFun ())
 mkTermToEvaluate pv bs args = do
     -- It decodes the program through the optimized ScriptForExecution. See `ScriptForExecution`.
-    ScriptForExecution (UPLC.Program _ v t) <- liftEither $ first CodecError $ CBOR.deserialiseOrFail $ fromStrict $ fromShort bs
+    (_, ScriptForExecution (UPLC.Program _ v t)) <- liftEither $ first CodecError $ CBOR.deserialiseFromBytes (scriptCBORDecoder pv) $ fromStrict $ fromShort bs
     unless (v == PLC.defaultVersion ()) $ throwError $ IncompatibleVersionError v
     let termArgs = fmap (PLC.mkConstant ()) args
         appliedT = PLC.mkIterApp () t termArgs

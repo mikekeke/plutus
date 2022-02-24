@@ -55,6 +55,7 @@ library
 
         Plutus.ApiCommon
     other-modules:
+        Codec.CBOR.Extras
         Data.Either.Extras
         Prettyprinter.Extras
     build-depends:
