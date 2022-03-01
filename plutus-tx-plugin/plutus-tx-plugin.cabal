@@ -139,6 +139,11 @@ test-suite size
     type: exitcode-stdio-1.0
     main-is: Main.hs
     hs-source-dirs: test/size
+    default-extensions:
+        DataKinds
+        KindSignatures
+        TemplateHaskell
+        NoImplicitPrelude
     build-depends:
         base >= 4.9 && < 5.0,
         plutus-tx:plutus-tx-testlib -any,
@@ -146,3 +151,11 @@ test-suite size
         plutus-tx-plugin,
         tagged -any,
         tasty -any
+    other-modules:
+        Size.Bool
+        Size.Either
+        Size.Enum
+        Size.Eq
+        Size.Ord
+        Size.Ratio
+        Size.Sqrt
