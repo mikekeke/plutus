@@ -152,12 +152,13 @@ test-suite size
         tagged -any,
         tasty -any
     other-modules:
+        Size.AssocMap
         Size.Bool
         Size.Either
         Size.Enum
         Size.Eq
+        Size.Maybe
         Size.Ord
         Size.Ratio
         Size.Sqrt
-        Size.Maybe
         

@@ -1,10 +1,12 @@
 module Main (main) where
 
 import Prelude
+import Size.AssocMap qualified as SizeAssocMap
 import Size.Bool qualified as SizeBool
 import Size.Either qualified as SizeEither
 import Size.Enum qualified as SizeEnum
 import Size.Eq qualified as SizeEq
+import Size.Maybe qualified as SizeMaybe
 import Size.Ord qualified as SizeOrd
 import Size.Ratio qualified as SizeRatio
 import Size.Sqrt qualified as SizeSqrt
@@ -19,4 +21,6 @@ main = defaultMain . testGroup "Size regression tests" $ [
   , SizeEq.test
   , SizeOrd.test
   , SizeRatio.test
+  , SizeMaybe.test
+  , SizeAssocMap.test
   ]
