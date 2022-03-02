@@ -218,7 +218,7 @@ cEitherMin :: CompiledCode (EitherInt -> EitherInt -> EitherInt)
 cEitherMin = $$(compile [|| Ord.min ||])
 
 -- Unit
-cUnitCompare :: CompiledCode (Bool -> Bool -> Ordering)
+cUnitCompare :: CompiledCode (() -> () -> Ordering)
 cUnitCompare = $$(compile [|| Ord.compare ||])
 
 cUnitLt :: CompiledCode (() -> () -> Bool)
