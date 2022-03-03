@@ -2,7 +2,6 @@ module Size.Sqrt (test) where
 
 import PlutusTx.Code (CompiledCode)
 import PlutusTx.Prelude
-import PlutusTx.Ratio as Plutus
 import PlutusTx.Sqrt qualified as Sqrt
 import PlutusTx.TH (compile)
 import PlutusTx.Test (fitsInto)

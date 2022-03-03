@@ -154,6 +154,7 @@ test-suite size
     other-modules:
         Size.Applicative
         Size.AssocMap
+        Size.Base
         Size.Bool
         Size.Either
         Size.Enum
