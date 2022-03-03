@@ -6,6 +6,7 @@ import Size.Bool qualified as SizeBool
 import Size.Either qualified as SizeEither
 import Size.Enum qualified as SizeEnum
 import Size.Eq qualified as SizeEq
+import Size.List qualified as SizeList
 import Size.Maybe qualified as SizeMaybe
 import Size.Ord qualified as SizeOrd
 import Size.Ratio qualified as SizeRatio
@@ -23,4 +24,5 @@ main = defaultMain . testGroup "Size regression tests" $ [
   , SizeRatio.test
   , SizeMaybe.test
   , SizeAssocMap.test
+  , SizeList.test
   ]

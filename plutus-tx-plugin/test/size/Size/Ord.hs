@@ -65,7 +65,7 @@ test =
       fitsInto "max" cEitherMin 277
     ],
     testGroup "()" [
-      fitsInto "compare" cUnitCompare 42,
+      fitsInto "compare" cUnitCompare 7,
       fitsInto "<" cUnitLt 6,
       fitsInto "<=" cUnitLte 6,
       fitsInto ">" cUnitGt 6,

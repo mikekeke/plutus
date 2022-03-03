@@ -157,6 +157,7 @@ test-suite size
         Size.Either
         Size.Enum
         Size.Eq
+        Size.List
         Size.Maybe
         Size.Ord
         Size.Ratio
