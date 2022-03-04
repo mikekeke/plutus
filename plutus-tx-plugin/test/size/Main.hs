@@ -8,6 +8,7 @@ import Size.Bool qualified as SizeBool
 import Size.Either qualified as SizeEither
 import Size.Enum qualified as SizeEnum
 import Size.Eq qualified as SizeEq
+import Size.Foldable qualified as SizeFoldable
 import Size.List qualified as SizeList
 import Size.Maybe qualified as SizeMaybe
 import Size.Ord qualified as SizeOrd
@@ -29,4 +30,5 @@ main = defaultMain . testGroup "Size regression tests" $ [
   , SizeList.test
   , SizeApplicative.test
   , SizeBase.test
+  , SizeFoldable.test
   ]
