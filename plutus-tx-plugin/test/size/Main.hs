@@ -15,6 +15,7 @@ import Size.Maybe qualified as SizeMaybe
 import Size.Ord qualified as SizeOrd
 import Size.Ratio qualified as SizeRatio
 import Size.Sqrt qualified as SizeSqrt
+import Size.Traversable qualified as SizeTraversable
 import Test.Tasty (defaultMain, testGroup)
 
 main :: IO ()
@@ -33,4 +34,5 @@ main = defaultMain . testGroup "Size regression tests" $ [
   , SizeBase.test
   , SizeFoldable.test
   , SizeFunctor.test
+  , SizeTraversable.test
   ]

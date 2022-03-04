@@ -165,4 +165,6 @@ test-suite size
         Size.Ord
         Size.Ratio
         Size.Sqrt
+        Size.Traversable
+        Size.Foldable
         
